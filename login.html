@@ -14,7 +14,7 @@
 <body class="font-mono-custom">
      <div class="flex min-h-screen">
         <div class="relative hidden lg:block w-1/2">
-            <img src="https://imgs.search.brave.com/LgC50D-zqdp1TKWR4HKoxZC-4389qaOikUOdDgBGc9s/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wMjcv/ODE5LzUwNi9zbWFs/bC9iZWF1dGlmdWwt/YmxhY2std29tYW4t/aG9sZGluZy1oZXIt/Y2VsbC1waG9uZS13/aXRoLWZpbmdlcnMt/b24tdGhlLXNjcmVl/bi1mcmVlLXBob3Rv/LmpwZw"
+            <img src="./src/public/an-african-american-woman-with-a-contagious-smile-interacts-with-her-smartphone.webp"
                 alt="bg-image" class="w-full h-full object-cover" />
             <div class="absolute inset-0 bg-black/80"></div>
             <div class="absolute inset-0 flex flex-col justify-between py-4 items-center">
@@ -38,7 +38,7 @@
                     <p class="text-[#878785] text-sm">Welcome back! Please enter your details.</p>
                 </div>
 
-                <form action="/login" method="POST" class="flex flex-col gap-5">
+                <form class="flex flex-col gap-5">
 
                     <div class="flex flex-col gap-1.5">
                         <label for="email" class="text-sm text-[#232322] font-medium">Email</label>
@@ -50,14 +50,14 @@
                         <label for="password" class="text-sm text-[#232322] font-medium">Password</label>
                        <div class="flex justify-between items-center border border-[#878785] rounded-lg px-4 py-2 focus-within:border-[#9e6915] focus-within:ring-1 focus-within:ring-[#9e6915] transition-all duration-200">
                          <input type="password" id="password" name="password" required placeholder="Min. 8 characters"
-                            class="border-0 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#9e6915] transition-all duration-200 placeholder:text-[#b0afad]" />
-                            <button type="button" class="text-sm text-[#9e6915] hover:text-[#cc830e] transition-colors duration-200 border-0" id="togglePasswordVisibility">
+                            class="border-0 rounded-lg text-sm outline-none focus:border-[#9e6915] transition-all duration-200 placeholder:text-[#b0afad]" />
+                            <button class="text-sm text-[#9e6915] hover:text-[#cc830e] transition-colors duration-200 border-0" id="togglePasswordVisibility">
                                 Show
                             </button>
                        </div>
                     </div>
 
-                    <button type="button"
+                    <button
                         class="w-full py-2.5 bg-[#9e6915] rounded-lg text-white font-medium cursor-pointer hover:bg-[#cc830e] transition-colors duration-200 mt-2" id="loginBtn">
                         Log In
                     </button>

@@ -1,6 +1,5 @@
 const createAccountBtn = document.getElementById("createBtn");
 
-// ── Toast helper — no more copy-pasting ──
 function showToast(message) {
     if (document.querySelector(".toast")) return;
 
@@ -46,8 +45,7 @@ createAccountBtn.addEventListener("click", (e) => {
         return showToast("Password must contain uppercase, lowercase, number and special character (@#$%&)");
     }
 
-    // ── Load registered users ──
-    // ✅ uses "registered_users" — never deleted on logout
+  
     const users = JSON.parse(localStorage.getItem("registered_users")) || [];
 
     const user = {
@@ -57,7 +55,6 @@ createAccountBtn.addEventListener("click", (e) => {
         password: password.value,
     };
 
-    // ── Duplicate checks ──
     if (users.some((u) => u.email === user.email)) {
         return showToast("Email already exists");
     }
@@ -71,7 +68,6 @@ createAccountBtn.addEventListener("click", (e) => {
     localStorage.setItem("registered_users", JSON.stringify(users));
 
     // ── Auto-login: save session separately ──
-    // ✅ "current_user" is what gets cleared on logout, not "registered_users"
     const session = { id: user.id, username: user.username, email: user.email };
     localStorage.setItem("current_user", JSON.stringify(session));
 
@@ -84,7 +80,8 @@ createAccountBtn.addEventListener("click", (e) => {
 
 // ── Toggle password visibility ──
 const togglePasswordVisibilityBtn = document.getElementById("togglePasswordVisibility");
-togglePasswordVisibilityBtn.addEventListener("click", () => {
+togglePasswordVisibilityBtn.addEventListener("click", (e) => {
+    e.preventDefault();
     const passwordInput = document.getElementById("password");
     const isVisible = passwordInput.type === "text";
     passwordInput.type = isVisible ? "password" : "text";

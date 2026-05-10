@@ -15,6 +15,7 @@ function showToast(message, isSuccess = false) {
 
 //load current user
 const loginBtn = document.getElementById("loginBtn");
+
 loginBtn.addEventListener("click", (e) => {
     e.preventDefault();
 
@@ -42,7 +43,9 @@ loginBtn.addEventListener("click", (e) => {
 // ── Toggle password visibility ──
 const toggleBtn = document.getElementById("togglePasswordVisibility");
 if (toggleBtn) {
-    toggleBtn.addEventListener("click", () => {
+    toggleBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        
         const passwordInput = document.getElementById("password");
         const isVisible = passwordInput.type === "text";
         passwordInput.type = isVisible ? "password" : "text";

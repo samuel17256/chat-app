@@ -90,19 +90,3 @@ document.getElementById("yourChats").addEventListener("keydown", (e) => {
 
 // ── Init ──
 displayChats();
-
-const hamburger = document.getElementById("hamburger");
-const mobileMenu = document.getElementById("mobileMenu");
-
-hamburger.addEventListener("click", () => {
-  hamburger.classList.toggle("open");
-  mobileMenu.classList.toggle("open");
-});
-
-// Close menu when a link is clicked
-mobileMenu.querySelectorAll("a, button").forEach((el) => {
-  el.addEventListener("click", () => {
-    hamburger.classList.remove("open");
-    mobileMenu.classList.remove("open");
-  });
-});
