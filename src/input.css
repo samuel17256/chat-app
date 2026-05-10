@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --ink: #0d0d0d;
+  --paper: #f5f2ec;
+  --ash: #e8e4dc;
+  --mist: #c8c2b6;
+  --stone: #7a7368;
+  --accent: #2a5c45;
+  --rust: #c94f2c;
+
+  --font-mono-custom: "DM Mono", monospace;
+  --font-serif-custom: "Instrument Serif", serif;
+}

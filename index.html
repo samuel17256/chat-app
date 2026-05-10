@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GistMe | Chat without limits</title>
+    <link rel="stylesheet" href="./src/output.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <style>
+        .font-mono-custom { font-family: 'DM Mono', monospace; }
+        .font-serif-custom { font-family: 'Instrument Serif', serif; }
+
+        /* Mobile menu transition */
+        #mobileMenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        #mobileMenu.open {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        /* Hamburger animation */
+        #hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #201f1e;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform-origin: center;
+        }
+        #hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        #hamburger.open span:nth-child(2) { opacity: 0; }
+        #hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        /* Underline link hover */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 0;
+            height: 1px; width: 0;
+            background: #9e6915;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+        .nav-link:hover { color: #65430c; }
+
+        /* Feature card hover */
+        .feature-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(158, 105, 21, 0.12);
+        }
+    </style>
+</head>
+
+<body class="font-mono-custom bg-[#faf9f7] text-[#201f1e]">
+
+    <!-- ── Navbar ── -->
+    <nav class="fixed w-full border-b border-[#e8e3da] z-50 bg-white/95 backdrop-blur-sm">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+
+            <!-- Logo -->
+            <a href="index.html" class="font-bold text-2xl text-[#201f1e] shrink-0">
+                Gist<span class="text-[#9e6915]">Me</span>
+            </a>
+
+            <!-- Desktop nav links -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="nav-link text-sm">Home</a>
+                <a href="#about" class="nav-link text-sm">About</a>
+                <a href="gist.html" class="nav-link text-sm">Gist</a>
+                <a href="#contact" class="nav-link text-sm">Contact</a>
+            </div>
+
+            <!-- Desktop CTA buttons -->
+            <div class="hidden md:flex items-center gap-3">
+                <button onclick="window.location.href='login.html'"
+                    class="border border-[#c8c6c0] px-4 py-1.5 text-sm rounded-lg cursor-pointer hover:bg-[#9e6915] hover:text-white hover:border-[#9e6915] transition-all duration-200">
+                    Login
+                </button>
+                <button onclick="window.location.href='register.html'"
+                    class="px-4 py-1.5 text-sm bg-[#9e6915] rounded-lg text-white cursor-pointer hover:bg-[#cc830e] transition-colors duration-200">
+                    Get Started Free
+                </button>
+            </div>
+
+            <!-- Hamburger (mobile) -->
+            <button id="hamburger" class="md:hidden flex flex-col gap-1.5 p-1 cursor-pointer" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="md:hidden bg-white border-t border-[#e8e3da]">
+            <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4">
+                <a href="index.html" class="text-sm py-2 border-b border-[#f0ece4] hover:text-[#9e6915] transition-colors">Home</a>
+                <a href="#about" class="text-sm py-2 border-b border-[#f0ece4] hover:text-[#9e6915] transition-colors">About</a>
+                <a href="gist.html" class="text-sm py-2 border-b border-[#f0ece4] hover:text-[#9e6915] transition-colors">Gist</a>
+                <a href="#contact" class="text-sm py-2 border-b border-[#f0ece4] hover:text-[#9e6915] transition-colors">Contact</a>
+                <div class="flex flex-col gap-2 pt-2">
+                    <button onclick="window.location.href='login.html'"
+                        class="w-full border border-[#c8c6c0] px-4 py-2 text-sm rounded-lg cursor-pointer hover:bg-[#9e6915] hover:text-white hover:border-[#9e6915] transition-all duration-200">
+                        Login
+                    </button>
+                    <button onclick="window.location.href='register.html'"
+                        class="w-full px-4 py-2 text-sm bg-[#9e6915] rounded-lg text-white cursor-pointer hover:bg-[#cc830e] transition-colors duration-200">
+                        Get Started Free
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+        <!-- ── Hero ── -->
+        <section class="pt-24 md:pt-28 pb-16 px-6">
+            <div class="max-w-6xl mx-auto min-h-[85vh] flex flex-col-reverse md:flex-row items-center justify-between gap-12">
+
+                <!-- Text -->
+                <div class="flex flex-col gap-6 max-w-lg text-center md:text-left">
+                    <div class="flex flex-col gap-3">
+                        <span class="text-xs tracking-widest uppercase text-[#9e6915] font-medium">Real conversations. Real people.</span>
+                        <h1 class="font-serif-custom text-5xl md:text-6xl lg:text-7xl leading-tight italic">
+                            <span class="text-[#9e6915] not-italic font-bold font-mono-custom">Gist</span> without limits.
+                        </h1>
+                        <p class="text-[#5a5955] text-sm md:text-base leading-relaxed">
+                            Just you and your people — anytime, anywhere. No noise, no distractions, just the gist.
+                        </p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                        <button onclick="window.location.href='register.html'"
+                            class="px-6 py-3 bg-[#9e6915] rounded-lg text-white text-sm cursor-pointer hover:bg-[#cc830e] transition-colors duration-200">
+                            Get Started Free
+                        </button>
+                        <button onclick="window.location.href='login.html'"
+                            class="px-6 py-3 border border-[#c8c6c0] rounded-lg text-sm cursor-pointer hover:border-[#9e6915] hover:text-[#9e6915] transition-all duration-200">
+                            Sign In
+                        </button>
+                    </div>
+
+                    <!-- Social proof -->
+                    <div class="flex items-center gap-3 justify-center md:justify-start">
+                        <div class="flex -space-x-2">
+                            <div class="w-7 h-7 rounded-full bg-[#9e6915] text-white text-[10px] flex items-center justify-center border-2 border-white">A</div>
+                            <div class="w-7 h-7 rounded-full bg-[#c8783a] text-white text-[10px] flex items-center justify-center border-2 border-white">K</div>
+                            <div class="w-7 h-7 rounded-full bg-[#7a500f] text-white text-[10px] flex items-center justify-center border-2 border-white">M</div>
+                            <div class="w-7 h-7 rounded-full bg-[#f5e9d3] text-[#7a500f] text-[10px] flex items-center justify-center border-2 border-white">+</div>
+                        </div>
+                        <span class="text-xs text-[#9a9590]">Join thousands already gisting</span>
+                    </div>
+                </div>
+
+                <!-- Image -->
+                <div class="relative shrink-0 flex items-center justify-center">
+                    <!-- Decorative shape -->
+                    <div class="absolute -bottom-4 -right-4 w-64 h-64 md:w-80 md:h-80 bg-[#9e6915] rounded-full opacity-10 z-0"></div>
+                    <div class="absolute -top-4 -left-4 w-24 h-24 border-2 border-[#9e6915] rounded-full opacity-20 z-0"></div>
+
+                    <img src="./src/public/an-african-american-woman-with-a-contagious-smile-interacts-with-her-smartphone.webp"
+                        alt="Woman smiling at her phone"
+                        class="w-64 h-72 md:w-96 md:h-110 object-cover rounded-2xl relative z-10 shadow-xl" />
+
+                    <div class="absolute top-6 -left-6 md:-left-12 bg-white rounded-2xl rounded-tl-sm shadow-lg px-4 py-2.5 z-20 max-w-40">
+                        <p class="text-[10px] text-[#5a5955]">hey! you online? 👋</p>
+                        <span class="text-[9px] text-[#c8c6c0]">just now</span>
+                    </div>
+                    <div class="absolute bottom-10 -right-4 md:-right-10 bg-[#9e6915] rounded-2xl rounded-br-sm shadow-lg px-4 py-2.5 z-20 max-w-35">
+                        <p class="text-[10px] text-white">yeah, let's gist! 🔥</p>
+                        <span class="text-[9px] text-white/60">just now</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── Why GistMe ── -->
+        <section id="about" class="py-16 px-6 bg-white">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Why choose <span class="text-[#9e6915]">GistMe?</span></h2>
+                    <p class="text-[#5a5955] text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+                        More than just a chat app, a platform designed to foster genuine connections and meaningful conversations.
+                    </p>
+                </div>
+
+                <!-- Feature cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="feature-card bg-[#faf9f7] border border-[#e8e3da] rounded-2xl p-6 flex flex-col gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-[#f5e9d3] flex items-center justify-center text-[#9e6915] text-lg">💬</div>
+                        <h3 class="font-bold text-base">Real-time Messaging</h3>
+                        <p class="text-[#5a5955] text-xs leading-relaxed">Send and receive messages instantly with no delays. Stay in sync with the people that matter.</p>
+                    </div>
+                    <div class="feature-card bg-[#faf9f7] border border-[#e8e3da] rounded-2xl p-6 flex flex-col gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-[#f5e9d3] flex items-center justify-center text-[#9e6915] text-lg">🔒</div>
+                        <h3 class="font-bold text-base">Private & Secure</h3>
+                        <p class="text-[#5a5955] text-xs leading-relaxed">Your conversations stay yours. We prioritize your privacy with secure, local-first storage.</p>
+                    </div>
+                    <div class="feature-card bg-[#faf9f7] border border-[#e8e3da] rounded-2xl p-6 flex flex-col gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-[#f5e9d3] flex items-center justify-center text-[#9e6915] text-lg">⚡</div>
+                        <h3 class="font-bold text-base">Lightning Fast</h3>
+                        <p class="text-[#5a5955] text-xs leading-relaxed">A lightweight interface that loads in seconds and works smoothly on any device.</p>
+                    </div>
+                    <div class="feature-card bg-[#faf9f7] border border-[#e8e3da] rounded-2xl p-6 flex flex-col gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-[#f5e9d3] flex items-center justify-center text-[#9e6915] text-lg">👤</div>
+                        <h3 class="font-bold text-base">Multiple Accounts</h3>
+                        <p class="text-[#5a5955] text-xs leading-relaxed">Support for multiple users on the same device. Each person keeps their own chat history.</p>
+                    </div>
+                    <div class="feature-card bg-[#faf9f7] border border-[#e8e3da] rounded-2xl p-6 flex flex-col gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-[#f5e9d3] flex items-center justify-center text-[#9e6915] text-lg">📱</div>
+                        <h3 class="font-bold text-base">Mobile Friendly</h3>
+                        <p class="text-[#5a5955] text-xs leading-relaxed">Fully responsive design that feels native on phones, tablets, and desktops alike.</p>
+                    </div>
+                    <div class="feature-card bg-[#faf9f7] border border-[#e8e3da] rounded-2xl p-6 flex flex-col gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-[#f5e9d3] flex items-center justify-center text-[#9e6915] text-lg">🎨</div>
+                        <h3 class="font-bold text-base">Clean Interface</h3>
+                        <p class="text-[#5a5955] text-xs leading-relaxed">Minimal, distraction-free design so you can focus on what matters — the conversation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── CTA Banner ── -->
+        <section class="py-16 px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="bg-[#9e6915] rounded-3xl px-8 py-12 md:px-16 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="text-center md:text-left">
+                        <h2 class="text-white text-2xl md:text-3xl font-bold mb-2">Ready to start gisting?</h2>
+                        <p class="text-white/70 text-sm">Create a free account and connect with your people today.</p>
+                    </div>
+                    <button onclick="window.location.href='register.html'"
+                        class="shrink-0 px-8 py-3 bg-white text-[#9e6915] font-bold text-sm rounded-xl cursor-pointer hover:bg-[#f5e9d3] transition-colors duration-200">
+                        Get Started Free
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer id="contact" class="border-t border-[#e8e3da] py-8 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <h2 class="font-bold text-xl text-[#201f1e]">Gist<span class="text-[#9e6915]">Me</span></h2>
+                    <p class="text-[#9a9590] text-xs mt-1">Real conversations. Real people.</p>
+                </div>
+                <div class="flex flex-col items-center md:items-end gap-2">
+                    <h3 class="font-bold text-sm">Follow Us</h3>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-xs text-[#5a5955] hover:text-[#9e6915] transition-colors">Facebook</a>
+                        <a href="#" class="text-xs text-[#5a5955] hover:text-[#9e6915] transition-colors">Twitter</a>
+                        <a href="#" class="text-xs text-[#5a5955] hover:text-[#9e6915] transition-colors">Instagram</a>
+                        <a href="#" class="text-xs text-[#5a5955] hover:text-[#9e6915] transition-colors">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-[#e8e3da] mt-6 pt-6 text-center">
+                <p class="text-xs text-[#9a9590]">&copy; 2026 GistMe. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./js/app.js"></script>
+
+</body>
+</html>
