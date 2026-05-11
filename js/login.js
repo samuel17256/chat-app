@@ -37,7 +37,7 @@ loginBtn.addEventListener("click", (e) => {
     localStorage.setItem("current_user", JSON.stringify(session));
 
     showToast("Login successful", true);
-    setTimeout(() => window.location.href = "gist.html", 4000);
+    setTimeout(() => window.location.href = "gist.html", 400);
 });
 
 // ── Toggle password visibility ──

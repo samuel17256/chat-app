@@ -75,6 +75,7 @@ createAccountBtn.addEventListener("click", (e) => {
     email.value    = "";
     password.value = "";
 
+    showToast("Account created successfully!", true);
     window.location.href = "login.html";
 });
 
