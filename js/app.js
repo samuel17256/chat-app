@@ -49,6 +49,7 @@ function displayChats() {
                 <span class="block text-[10px] mt-1 text-right ${isMe ? "text-white/60" : "text-gray-400"}">
                     ${time}
                 </span>
+              ${isMe ? `<button class="btn-delete border-red-600 border px-2 rounded-lg text-red-50" data-id="${chat.id}">Delete</button>` : ""}
             </div>
         `;
 
@@ -80,6 +81,19 @@ sendBtn.addEventListener("click", (e) => {
   localStorage.setItem("chats", JSON.stringify(storedChats));
 
   chatInput.value = "";
+  displayChats();
+});
+
+// ── Delete message ──
+document.getElementById("chatCard").addEventListener("click", (e) => {
+  if (!e.target.classList.contains("btn-delete")) return;
+
+  const id = Number(e.target.dataset.id);
+  let storedChats = JSON.parse(localStorage.getItem("chats")) || [];
+
+  storedChats = storedChats.filter((chat) => chat.id !== id);
+  localStorage.setItem("chats", JSON.stringify(storedChats));
+
   displayChats();
 });
 
