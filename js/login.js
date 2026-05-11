@@ -37,7 +37,7 @@ loginBtn.addEventListener("click", (e) => {
     localStorage.setItem("current_user", JSON.stringify(session));
 
     showToast("Login successful", true);
-    setTimeout(() => window.location.href = "gist.html", 100);
+    setTimeout(() => window.location.href = "gist.html", 4000);
 });
 
 // ── Toggle password visibility ──
@@ -45,7 +45,7 @@ const toggleBtn = document.getElementById("togglePasswordVisibility");
 if (toggleBtn) {
     toggleBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        
+
         const passwordInput = document.getElementById("password");
         const isVisible = passwordInput.type === "text";
         passwordInput.type = isVisible ? "password" : "text";
