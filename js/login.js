@@ -1,3 +1,9 @@
+import { 
+  auth, 
+  signInWithEmailAndPassword, 
+  onAuthStateChanged 
+} from "./firebase-config.js";
+
 function showToast(message, isSuccess = false) {
     if (document.querySelector(".toast")) return;
 
@@ -13,7 +19,13 @@ function showToast(message, isSuccess = false) {
     setTimeout(() => div.remove(), 2000);
 }
 
-//load current user
+// Redirect logged-in users
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        window.location.href = "gist.html";
+    }
+});
+
 const loginBtn = document.getElementById("loginBtn");
 
 loginBtn.addEventListener("click", (e) => {
@@ -26,18 +38,28 @@ loginBtn.addEventListener("click", (e) => {
         return showToast("Fill all inputs");
     }
 
-    const users = JSON.parse(localStorage.getItem("registered_users")) || [];
-    const user  = users.find((u) => u.email === email && u.password === password);
+    loginBtn.disabled = true;
+    loginBtn.innerText = "Logging in...";
 
-    if (!user) {
-        return showToast("Invalid email or password");
-    }
-
-    const session = { id: user.id, username: user.username, email: user.email };
-    localStorage.setItem("current_user", JSON.stringify(session));
-
-    showToast("Login successful", true);
-    setTimeout(() => window.location.href = "gist.html", 400);
+    signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+            showToast("Login successful", true);
+            setTimeout(() => window.location.href = "gist.html", 500);
+        })
+        .catch((error) => {
+            loginBtn.disabled = false;
+            loginBtn.innerText = "Log In";
+            
+            let userFriendlyMessage = "Invalid email or password";
+            if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+                userFriendlyMessage = "Invalid email or password";
+            } else if (error.code === "auth/invalid-email") {
+                userFriendlyMessage = "Email must be valid";
+            } else {
+                userFriendlyMessage = error.message;
+            }
+            showToast(userFriendlyMessage);
+        });
 });
 
 // ── Toggle password visibility ──
