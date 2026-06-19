@@ -1,143 +1,125 @@
-import { 
-  auth, 
-  db, 
-  signOut, 
-  onAuthStateChanged,
-  collection,
-  addDoc,
-  deleteDoc,
-  doc,
-  query,
-  orderBy,
-  onSnapshot
-} from "./firebase-config.js";
-
 let currentUser = null;
-let unsubscribeChats = null;
+const socket = io();
 
-// ── Auth check & Session initialization ──
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    // Unsubscribe from Firestore listeners if logged out
-    if (unsubscribeChats) {
-      unsubscribeChats();
-      unsubscribeChats = null;
+// ── Auth Guard: verify session ──
+async function initAuth() {
+  try {
+    const res = await fetch("/api/auth/me");
+    if (!res.ok) {
+      window.location.href = "login.html";
+      return;
     }
-    window.location.href = "login.html";
-  } else {
-    currentUser = user;
-    const name = currentUser.displayName || currentUser.email || "?";
+    const data = await res.json();
+    currentUser = data.user;
+
+    const name = currentUser.username || currentUser.email || "?";
     document.getElementById("profileAvatar").innerText = name[0].toUpperCase();
-    
-    // Listen to messages in real-time
-    listenToChats();
+  } catch {
+    window.location.href = "login.html";
+  }
+}
+
+// ── Logout ──
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  try {
+    await fetch("/api/auth/logout", { method: "POST" });
+  } finally {
+    window.location.href = "login.html";
   }
 });
 
-// ── Logout ──
-const logoutBtn = document.getElementById("logoutBtn");
-logoutBtn.addEventListener("click", () => {
-  signOut(auth)
-    .then(() => {
-      window.location.href = "login.html";
-    })
-    .catch((error) => {
-      console.error("Logout error: ", error);
-    });
-});
-
-// ── Render chats (Real-time listener) ──
-function listenToChats() {
+// ── Render a single chat bubble ──
+function renderMessage(chat, prepend = false) {
   const chatCard = document.getElementById("chatCard");
-  const chatsQuery = query(collection(db, "chats"), orderBy("date", "asc"));
-
-  unsubscribeChats = onSnapshot(chatsQuery, (snapshot) => {
-    chatCard.innerHTML = "";
-
-    if (snapshot.empty) return;
-
-    snapshot.forEach((docSnap) => {
-      const chat = docSnap.data();
-      const chatId = docSnap.id;
-      
-      const isMe = chat.senderEmail === currentUser.email;
-      const senderName = chat.senderName || chat.sender || "User";
-      const initial = senderName.charAt(0).toUpperCase() || "?";
-      const time = new Date(chat.date || Date.now()).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-
-      const row = document.createElement("div");
-      row.className = `flex items-end gap-2 mb-2 ${isMe ? "flex-row-reverse" : ""}`;
-
-      row.innerHTML = `
-          <div class="w-6 h-6 rounded-full text-[10px] flex items-center justify-center shrink-0
-              ${isMe ? "bg-[#9e6915] text-white" : "bg-[#f5e9d3] text-[#7a500f]"}">
-              ${initial}
-          </div>
-          <div class="max-w-[72%] text-xs leading-relaxed px-4 py-2.5 wrap-break-word
-              ${
-                isMe
-                  ? "bg-[#9e6915] text-white rounded-[18px] rounded-br-md"
-                  : "bg-[#f0ece4] text-gray-800 rounded-[18px] rounded-bl-md"
-              }">
-              <span class="block text-[9px] font-bold opacity-60 mb-0.5">${senderName}</span>
-              ${chat.message}
-              <span class="block text-[10px] mt-1 text-right ${isMe ? "text-white/60" : "text-gray-400"}">
-                  ${time}
-              </span>
-            ${isMe ? `<button class="btn-delete border-red-600 border px-2 rounded-lg text-red-50 mt-1 cursor-pointer block hover:bg-red-500 hover:text-white transition-colors" data-id="${chatId}">Delete</button>` : ""}
-          </div>
-      `;
-
-      chatCard.appendChild(row);
-    });
-
-    const container = document.getElementById("chatContainer");
-    container.scrollTop = container.scrollHeight;
-  }, (error) => {
-    console.error("Firestore error: ", error);
+  const isMe = chat.senderEmail === currentUser.email;
+  const initial = (chat.senderName || "?")[0].toUpperCase();
+  const time = new Date(chat.createdAt || Date.now()).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
   });
+
+  const row = document.createElement("div");
+  row.className = `flex items-end gap-2 mb-2 ${isMe ? "flex-row-reverse" : ""}`;
+  row.dataset.id = chat._id;
+
+  row.innerHTML = `
+    <div class="w-6 h-6 rounded-full text-[10px] flex items-center justify-center shrink-0
+      ${isMe ? "bg-[#9e6915] text-white" : "bg-[#f5e9d3] text-[#7a500f]"}">
+      ${initial}
+    </div>
+    <div class="max-w-[72%] text-xs leading-relaxed px-4 py-2.5 wrap-break-word
+      ${isMe
+        ? "bg-[#9e6915] text-white rounded-[18px] rounded-br-md"
+        : "bg-[#f0ece4] text-gray-800 rounded-[18px] rounded-bl-md"}">
+      <span class="block text-[9px] font-bold opacity-60 mb-0.5">${chat.senderName}</span>
+      ${chat.message}
+      <span class="block text-[10px] mt-1 text-right ${isMe ? "text-white/60" : "text-gray-400"}">
+        ${time}
+      </span>
+      ${isMe ? `<button class="btn-delete border-red-400 border px-2 py-0.5 rounded-lg text-red-100 mt-1 cursor-pointer block hover:bg-red-500 hover:text-white transition-colors text-[10px]" data-id="${chat._id}">Delete</button>` : ""}
+    </div>
+  `;
+
+  if (prepend) {
+    chatCard.prepend(row);
+  } else {
+    chatCard.appendChild(row);
+  }
+
+  // Scroll to latest message
+  const container = document.getElementById("chatContainer");
+  container.scrollTop = container.scrollHeight;
 }
 
-// ── Send message ──
+// ── Socket.io Events ──
+
+// Receive chat history on connection
+socket.on("chatHistory", (messages) => {
+  const chatCard = document.getElementById("chatCard");
+  chatCard.innerHTML = "";
+  messages.forEach((msg) => renderMessage(msg));
+});
+
+// Receive a new real-time message
+socket.on("message", (msg) => {
+  renderMessage(msg);
+});
+
+// Handle real-time message deletion
+socket.on("messageDeleted", (msgId) => {
+  const row = document.querySelector(`[data-id="${msgId}"]`);
+  if (row) row.remove();
+});
+
+// Handle socket auth error
+socket.on("connect_error", (err) => {
+  console.error("Socket connection error:", err.message);
+  window.location.href = "login.html";
+});
+
+// ── Send Message ──
 const sendBtn = document.getElementById("sendBtn");
 sendBtn.addEventListener("click", (e) => {
   e.preventDefault();
-
   const chatInput = document.getElementById("yourChats");
   const message = chatInput.value.trim();
+  if (!message || !currentUser) return;
 
-  if (message === "" || !currentUser) return;
-
-  addDoc(collection(db, "chats"), {
-    message: message,
-    senderName: currentUser.displayName || currentUser.email.split("@")[0],
-    senderEmail: currentUser.email,
-    date: new Date().getTime(),
-  })
-  .then(() => {
-    chatInput.value = "";
-  })
-  .catch((error) => {
-    console.error("Error sending message: ", error);
-  });
+  socket.emit("sendMessage", message);
+  chatInput.value = "";
 });
 
-// ── Delete message ──
+// ── Delete Message ──
 document.getElementById("chatCard").addEventListener("click", (e) => {
   if (!e.target.classList.contains("btn-delete")) return;
-
-  const chatId = e.target.dataset.id;
-  
-  deleteDoc(doc(db, "chats", chatId))
-    .catch((error) => {
-      console.error("Error deleting message: ", error);
-    });
+  const msgId = e.target.dataset.id;
+  socket.emit("deleteMessage", msgId);
 });
 
 // ── Enter key to send ──
 document.getElementById("yourChats").addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendBtn.click();
 });
+
+// ── Initialize ──
+initAuth();
