@@ -281,6 +281,11 @@ io.on("connection", async (socket) => {
 });
 
 // ── Start Server ──
-server.listen(PORT, () => {
-  console.log(`🚀 GistMe server running at http://localhost:${PORT}`);
-});
+// at the bottom of your file, replace server.listen(...) with:
+if (process.env.NODE_ENV !== "production") {
+  server.listen(PORT, () => {
+    console.log(`🚀 GistMe server running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
