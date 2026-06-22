@@ -1,5 +1,5 @@
 let currentUser = null;
-const socket = io();
+const socket = io({ autoConnect: false }); 
 
 // ── Auth Guard: verify session ──
 async function initAuth() {
@@ -14,6 +14,9 @@ async function initAuth() {
 
     const name = currentUser.username || currentUser.email || "?";
     document.getElementById("profileAvatar").innerText = name[0].toUpperCase();
+
+    socket.connect();
+
   } catch {
     window.location.href = "login.html";
   }
@@ -66,7 +69,6 @@ function renderMessage(chat, prepend = false) {
     chatCard.appendChild(row);
   }
 
-  // Scroll to latest message
   const container = document.getElementById("chatContainer");
   container.scrollTop = container.scrollHeight;
 }
@@ -75,6 +77,9 @@ function renderMessage(chat, prepend = false) {
 
 // Receive chat history on connection
 socket.on("chatHistory", (messages) => {
+    console.log("📨 chatHistory received:", messages);
+  console.log("📨 message count:", messages.length);
+  console.log("📨 currentUser at this point:", currentUser);
   const chatCard = document.getElementById("chatCard");
   chatCard.innerHTML = "";
   messages.forEach((msg) => renderMessage(msg));
