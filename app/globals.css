@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono-custom: "DM Mono", monospace;
+  --font-serif-custom: "Instrument Serif", serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-mono-custom);
+  }
+}
+
+.font-mono-custom {
+  font-family: var(--font-mono-custom);
+}
+
+.font-serif-custom {
+  font-family: var(--font-serif-custom);
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  height: 1px;
+  width: 0;
+  background: #9e6915;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link:hover {
+  color: #65430c;
+}
+
+.feature-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(158, 105, 21, 0.12);
+}
+
+.mobile-menu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.mobile-menu.open {
+  max-height: 400px;
+  opacity: 1;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #201f1e;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
